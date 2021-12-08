@@ -1,0 +1,29 @@
+{
+  "name": "feed-service",
+  "version": "0.0.1",
+  "description": "Feed Service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --exec babel-node ./src/index.js",
+    "build": "babel src --out-dir dist --copy-files",
+    "start": "npm run build && babel-node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/jack5341/raft-consensus/src/feed"
+  },
+  "author": "Nedim Akar",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.0",
+    "@babel/node": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "modal": "^1.2.0",
+    "nodemon": "^2.0.15"
+  }
+}
