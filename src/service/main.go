@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"net"
 	"os"
 	"strings"
@@ -43,6 +44,7 @@ func main() {
 	if *ports != "" {
 		splitedString := strings.Split(*ports, ",")
 
+		// print hello world to rbrowser.
 		for _, portServer := range splitedString {
 			c, err := net.Dial(CONN_TYPE, "localhost:"+portServer)
 
@@ -51,14 +53,26 @@ func main() {
 			}
 
 			for {
-				data, err := c.Write([]byte("Hello"))
+				nodeID := rand.Intn(100)
+				entrie := AppendEntries{
+					term:         "1",
+					leaderId:     int32(nodeID),
+					prevLogIndex: 0,
+					prevLogTerm:  "1",
+					leaderCommit: "1,2,3,4,5",
+				}
+
+				rand.Seed(time.Now().UnixNano())
+				n := rand.Intn(5)
+
+				_, err := c.Write([]byte(fmt.Sprintf("%v \n", entrie)))
 
 				if err != nil {
 					log.Fatal(err)
 				}
 
-				fmt.Println("data:", data)
-				time.Sleep(time.Millisecond * 3000)
+				fmt.Printf("Sleeping %d seconds...\n", n)
+				time.Sleep(time.Duration(n) * time.Second)
 			}
 		}
 	}
@@ -70,16 +84,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	for {
-		// Listen for an incoming connection.
-		conn, err := l.Accept()
+	// Listen for an incoming connection.
+	conn, err := l.Accept()
 
-		if err != nil {
-			fmt.Println("Error accepting: ", err.Error())
-			os.Exit(1)
-		}
-
-		// Handle connections in a new goroutine.
-		handle.Request(conn)
+	if err != nil {
+		fmt.Println("Error accepting: ", err.Error())
+		os.Exit(1)
 	}
+
+	// Handle connections in a new goroutine.
+	handle.Request(conn)
 }
